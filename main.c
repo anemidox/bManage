@@ -1343,7 +1343,7 @@ void inMwithDepHistory()
 
 // ContactUs..
 
-// END LOGIN ACCOUNT................................................
+// END LOGIN ACCOUNT.................................................
 // Function to forget in account user name and password etc.
 void forgetAcc()
 {
