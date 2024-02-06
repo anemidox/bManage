@@ -36,7 +36,7 @@ void inMdeposit(const char *DFirstName, const char *DLastName, const char *DNicN
 void inMtransfer(const char *TFirstName, const char *TLastName, const char *TNicNo);
 void inMloan(const char *LFirstName, const char *LLastName, const char *LNicNo);
 void outMwithdraw(const char *outWFirstName, const char *outWLastName, const char *outWNicNo);
-void inMwithDepHistory();
+void inMwithDepHistory(const char *histNic);
 void afterOutMWithdraw(const int aOutAccNo);
 int validAmountCheck(int amount);
 int accountAmountCheck(const int checkAAcountNo);
@@ -745,7 +745,7 @@ void inLoginMenu(const char *inMfirstName, const char *inMlastName, const char *
         inMloan(inMfirstName, inMlastName, inMnicNo);
         break;
     case 5:
-        inMwithDepHistory();
+        inMwithDepHistory(inMnicNo);
         break;
     case 6:
         mainMenu();
@@ -1277,6 +1277,11 @@ void transfer(const char *holderNic, const char *mytNic)
                 updateMoney(transANo, transAmount);
                 updateWithMoney(myANo, transAmount);
                 printf("\nTransaction Succsussful.\n\n");
+                // Mysql transactions table update...
+                char query[500];
+                snprintf(query, sizeof(query), "INSERT INTO transactions (transfer_acc_no, user_acc_no, amount) VALUES (%d, %d, %d)", transANo, myANo, transAmount);
+
+                executeQuery(query);
 
                 printf("[1] : Go to Main Menu.\n");
                 printf("[2] : Exit\n\n");
@@ -1337,13 +1342,22 @@ void inMloan(const char *LFirstName, const char *LLastName, const char *LNicNo)
 }
 
 // Function to view withdraw and deposit history
-void inMwithDepHistory()
+void inMwithDepHistory(const char *histNic)
 {
+    printf("\n\n[1] : Print your WITHDRAWAL history.\n");
+    printf("[2] : Print your DEPOSIT history.\n");
+    printf("[3] : Print your TRANSACTION history.\n\n");
+    
+    printf("Enter Your Choice : ");
 }
 
+<<<<<<< HEAD
 // ContactUs..
 
 // END LOGIN ACCOUNT.................................................
+=======
+// END LOGIN ACCOUNT................................................
+>>>>>>> dev
 // Function to forget in account user name and password etc.
 void forgetAcc()
 {
