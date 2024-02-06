@@ -47,6 +47,9 @@ void displayAccountBalance(int inMSqlacount_no);
 void exitProgram(const char *DFirstName, const char *DLastName);
 void tAfterGetNic(const char *tgetNic, const char *myNicNo);
 void transfer(const char *holderNic, const char *mytNic);
+void hisWithHis(const char *niswNic);
+void hisDepHis(const char *nisdNic);
+void hisTransHis(const char *nitNic);
 
 char *showName(const char *transNicNo);
 char *showNicNo(int showNicNO);
@@ -1344,20 +1347,245 @@ void inMloan(const char *LFirstName, const char *LLastName, const char *LNicNo)
 // Function to view withdraw and deposit history
 void inMwithDepHistory(const char *histNic)
 {
+    int historyChoise;
+
     printf("\n\n[1] : Print your WITHDRAWAL history.\n");
     printf("[2] : Print your DEPOSIT history.\n");
-    printf("[3] : Print your TRANSACTION history.\n\n");
-    
+    printf("[3] : Print your TRANSACTION history.\n");
+    printf("[4] : Go to main Menu.\n\n");
+
     printf("Enter Your Choice : ");
+    scanf("%d", &historyChoise);
+
+    printf("\n\n");
+
+    switch (historyChoise)
+    {
+    case 1:
+        hisWithHis(histNic);
+        break;
+    case 2:
+        hisDepHis(histNic);
+        break;
+    case 3:
+        hisTransHis(histNic);
+        break;
+    case 4:
+        mainMenu();
+        break;
+    default:
+        printf("Invalid Choise. Try again.");
+        break;
+    }
 }
 
-<<<<<<< HEAD
-// ContactUs..
+// Function Get data Withdrawal history...
+void hisWithHis(const char *niswNic)
+{
+    int hisWAno = getAccountNumber(niswNic);
 
-// END LOGIN ACCOUNT.................................................
-=======
+    // Check if the connection is NULL before executing the query
+    if (conn == NULL)
+    {
+        fprintf(stderr, "Error: MySQL connection is NULL.\n");
+        return;
+    }
+
+    char query[256];
+    snprintf(query, sizeof(query), "SELECT withdraw_id, deposit_date_time, withdraw_amount FROM withdraw WHERE account_no = %d", hisWAno);
+
+    if (mysql_query(conn, query) != 0)
+    {
+        fprintf(stderr, "Error: %s\n", mysql_error(conn));
+        return;
+    }
+
+    result = mysql_store_result(conn);
+
+    MYSQL_FIELD *fields = mysql_fetch_fields(result);
+
+    // Print frame and column headers with color
+    printf("\x1B[34m"); // Blue color
+    printf("+");
+    for (int i = 0; i < mysql_num_fields(result); i++)
+    {
+        for (int j = 0; j < 32; j++)
+        {
+            printf("-");
+        }
+        printf("+");
+    }
+    printf("\n");
+
+    printf("|");
+    for (int i = 0; i < mysql_num_fields(result); i++)
+    {
+        if (strcmp(fields[i].name, "account_no") != 0)
+        {
+            printf("\x1B[34;1m%-30s\x1B[0m|", fields[i].name);
+        }
+    }
+    printf("\n");
+
+    printf("+");
+    for (int i = 0; i < mysql_num_fields(result); i++)
+    {
+        for (int j = 0; j < 32; j++)
+        {
+            printf("-");
+        }
+        printf("+");
+    }
+    printf("\n");
+    printf("\x1B[0m"); // Reset color
+
+    // Print data with alternating row colors
+    int rowCounter = 0;
+    while ((row = mysql_fetch_row(result)) != NULL)
+    {
+        if (rowCounter % 2 == 0)
+        {
+            printf("\x1B[32m"); // Green color for even rows
+        }
+        else
+        {
+            printf("\x1B[36m"); // Cyan color for odd rows
+        }
+
+        printf("|");
+        for (int i = 0; i < mysql_num_fields(result); i++)
+        {
+            if (strcmp(fields[i].name, "account_no") != 0)
+            {
+                printf("%-30s|", row[i] ? row[i] : "NULL");
+            }
+        }
+        printf("\n");
+
+        printf("+");
+        for (int i = 0; i < mysql_num_fields(result); i++)
+        {
+            for (int j = 0; j < 32; j++)
+            {
+                printf("-");
+            }
+            printf("+");
+        }
+        printf("\n");
+        printf("\x1B[0m"); // Reset color
+        rowCounter++;
+    }
+
+    mysql_free_result(result);
+}
+
+// Function to Get data Deposit history...
+void hisDepHis(const char *nisdNic)
+{
+    int hisDAno = getAccountNumber(nisdNic);
+
+    // Check if the connection is NULL before executing the query
+    if (conn == NULL)
+    {
+        fprintf(stderr, "Error: MySQL connection is NULL.\n");
+        return;
+    }
+
+    char query[256];
+    snprintf(query, sizeof(query), "SELECT deposit_id, deposit_date_time, deposit_amount FROM deposits WHERE account_no = %d", hisDAno);
+
+    if (mysql_query(conn, query) != 0)
+    {
+        fprintf(stderr, "Error: %s\n", mysql_error(conn));
+        return;
+    }
+
+    result = mysql_store_result(conn);
+
+    MYSQL_FIELD *fields = mysql_fetch_fields(result);
+
+    // Print frame and column headers with color
+    printf("\x1B[34m"); // Blue color
+    printf("+");
+    for (int i = 0; i < mysql_num_fields(result); i++)
+    {
+        for (int j = 0; j < 32; j++)
+        {
+            printf("-");
+        }
+        printf("+");
+    }
+    printf("\n");
+
+    printf("|");
+    for (int i = 0; i < mysql_num_fields(result); i++)
+    {
+        if (strcmp(fields[i].name, "account_no") != 0)
+        {
+            printf("\x1B[34;1m%-30s\x1B[0m|", fields[i].name);
+        }
+    }
+    printf("\n");
+
+    printf("+");
+    for (int i = 0; i < mysql_num_fields(result); i++)
+    {
+        for (int j = 0; j < 32; j++)
+        {
+            printf("-");
+        }
+        printf("+");
+    }
+    printf("\n");
+    printf("\x1B[0m"); // Reset color
+
+    // Print data with alternating row colors
+    int rowCounter = 0;
+    while ((row = mysql_fetch_row(result)) != NULL)
+    {
+        if (rowCounter % 2 == 0)
+        {
+            printf("\x1B[32m"); // Green color for even rows
+        }
+        else
+        {
+            printf("\x1B[36m"); // Cyan color for odd rows
+        }
+
+        printf("|");
+        for (int i = 0; i < mysql_num_fields(result); i++)
+        {
+            if (strcmp(fields[i].name, "account_no") != 0)
+            {
+                printf("%-30s|", row[i] ? row[i] : "NULL");
+            }
+        }
+        printf("\n");
+
+        printf("+");
+        for (int i = 0; i < mysql_num_fields(result); i++)
+        {
+            for (int j = 0; j < 32; j++)
+            {
+                printf("-");
+            }
+            printf("+");
+        }
+        printf("\n");
+        printf("\x1B[0m"); // Reset color
+        rowCounter++;
+    }
+
+    mysql_free_result(result);
+}
+
+// Function to Get Transaction History...
+void hisTransHis(const char *nitNic)
+{
+    int hisTAno = getAccountNumber(nitNic);
+}
+
 // END LOGIN ACCOUNT................................................
->>>>>>> dev
 // Function to forget in account user name and password etc.
 void forgetAcc()
 {
