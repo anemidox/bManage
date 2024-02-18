@@ -50,6 +50,10 @@ void transfer(const char *holderNic, const char *mytNic);
 void hisWithHis(const char *niswNic);
 void hisDepHis(const char *nisdNic);
 void hisTransHis(const char *nitNic);
+void forgetAcc();
+void forgetMyAcc();
+void changeDetails();
+void deleteAcc();
 
 char *showName(const char *transNicNo);
 char *showNicNo(int showNicNO);
@@ -265,13 +269,13 @@ void mainMenu()
     int userChoice;
 
     printf("\n...............................................................................\n\n");
-    printf(ANSI_BG_YELLOW ANSI_BLINK " ! WELCOME TO DEVELLOPMENT BANK SYSTERM ! " ANSI_RESET "\n\n");
+    printf(ANSI_BG_YELLOW ANSI_BLINK "   ! WELCOME TO DEVELLOPMENT BANK SYSTERM !   " ANSI_RESET "\n\n");
     printf(ANSI_COLOR_MAGENTA "Press (1) :" ANSI_COLOR_RESET " Create a new account\n");
     printf(ANSI_COLOR_MAGENTA "Press (2) :" ANSI_COLOR_RESET " Login to your account\n");
-    printf(ANSI_COLOR_MAGENTA "Press (3) :" ANSI_COLOR_RESET " Forget account\n");
+    printf(ANSI_COLOR_MAGENTA "Press (3) :" ANSI_COLOR_RESET " Account Details\n");
     printf(ANSI_COLOR_MAGENTA "Press (4) :" ANSI_COLOR_RESET " [ EXIT ]\n\n");
 
-    printf(ANSI_COLOR_BLUE "Enter Your choice : " ANSI_COLOR_RESET);
+    printf(ANSI_COLOR_BLUE "Enter Your Choice : " ANSI_COLOR_RESET);
     scanf("%d", &userChoice);
 
     switch (userChoice)
@@ -289,7 +293,7 @@ void mainMenu()
         mysql_close(conn);
         exit(EXIT_SUCCESS);
     default:
-        printf("\n\n" ANSI_COLOR_BLACK ANSI_BG_RED "YOUR ENTERED VALUE IS NOT CORRECT ." ANSI_RESET ANSI_BLINK ANSI_BG_RED " PLEASE TRY AGAIN !!! " ANSI_RESET "\n\n");
+        printf("\n\n" ANSI_COLOR_BLACK ANSI_BG_RED "YOUR ENTERED VALUE IS NOT CORRECT  ." ANSI_RESET ANSI_BLINK ANSI_BG_RED " PLEASE TRY AGAIN !!! " ANSI_RESET "\n\n");
         sleep(2);
         mainMenu();
     }
@@ -316,24 +320,24 @@ void createNewAcc()
     printf(ANSI_COLOR_CYAN "FILL THIS FORM TO CREATE A NEW ACCOUNT .\n\n" ANSI_COLOR_RESET);
 
     // Get user input for each field
-    printf(ANSI_COLOR_MAGENTA "First Name : " ANSI_COLOR_RESET);
+    printf(ANSI_COLOR_MAGENTA "First Name           : " ANSI_COLOR_RESET);
     scanf("%ms", &firstName); // %ms is used to allocate memory for the string
 
-    printf(ANSI_COLOR_MAGENTA "Last Name : " ANSI_COLOR_RESET);
+    printf(ANSI_COLOR_MAGENTA "Last Name            : " ANSI_COLOR_RESET);
     scanf("%ms", &lastName);
 
-    printf(ANSI_COLOR_MAGENTA "Address : " ANSI_COLOR_RESET);
+    printf(ANSI_COLOR_MAGENTA "Address              : " ANSI_COLOR_RESET);
     clearBuffer(); // Clear the input buffer before using fgets
     fgets(address, sizeof(address), stdin);
     address[strcspn(address, "\n")] = '\0'; // Remove the trailing newline character
 
-    printf(ANSI_COLOR_MAGENTA "District : " ANSI_COLOR_RESET);
+    printf(ANSI_COLOR_MAGENTA "District             : " ANSI_COLOR_RESET);
     scanf("%ms", &district);
 
     // Input validation for NIC (numeric and NIC_LENGTH digits)
     do
     {
-        printf(ANSI_COLOR_MAGENTA "NIC No (%d digits) : " ANSI_COLOR_RESET, NIC_LENGTH);
+        printf(ANSI_COLOR_MAGENTA "NIC No (%d digits)   : " ANSI_COLOR_RESET, NIC_LENGTH);
         scanf("%s", nic);
     } while (strlen(nic) != NIC_LENGTH || !isNumeric(nic));
     veryfyNic(nic);
@@ -343,7 +347,7 @@ void createNewAcc()
     // Input validation for email
     do
     {
-        printf(ANSI_COLOR_MAGENTA "Email : " ANSI_COLOR_RESET);
+        printf(ANSI_COLOR_MAGENTA "Email                : " ANSI_COLOR_RESET);
         scanf("%s", email);
     } while (!isValidEmail(email));
 
@@ -384,7 +388,7 @@ void createNewAcc()
 
     executeQuery(query);
 
-    printf("\n" ANSI_COLOR_BLACK ANSI_BG_GREEN "ACCOUNT CREATED SUCCESSFUL ." ANSI_RESET ANSI_BLINK ANSI_BG_GREEN " LOGIN YOUR ACCOUNT !!! " ANSI_RESET "\n");
+    printf("\n" ANSI_COLOR_BLACK ANSI_BG_GREEN "ACCOUNT CREATED SUCCESSFUL  ." ANSI_RESET ANSI_BLINK ANSI_BG_GREEN " LOGIN YOUR ACCOUNT !!! " ANSI_RESET "\n");
     sleep(3);
     // Display the user account no and password
     if (1 == 1)
@@ -545,8 +549,8 @@ void displayAccountInfo(const char *passNicNo)
     while ((row = mysql_fetch_row(result)))
     {
         // Assuming account number is the first field and password is the second field
-        printf(ANSI_COLOR_GREEN "ACCOUNT NUMBER : %s" ANSI_RESET "\n", row[0] ? row[0] : "NULL");
-        printf(ANSI_COLOR_GREEN "PASSWORD : %s " ANSI_RESET "\n", row[1] ? row[1] : "NULL");
+        printf(ANSI_COLOR_GREEN "ACCOUNT NUMBER :  %s" ANSI_RESET "\n", row[0] ? row[0] : "NULL");
+        printf(ANSI_COLOR_GREEN "PASSWORD       :  %s  " ANSI_RESET "\n", row[1] ? row[1] : "NULL");
     }
 
     mysql_free_result(result);
@@ -662,10 +666,10 @@ void loginAcc()
 
     printf("\n...............................................................................\n\n");
     printf(ANSI_COLOR_CYAN "FILL THIS FORM TO LOGIN YOUR ACCOUNT .\n\n" ANSI_COLOR_RESET);
-    printf(ANSI_COLOR_MAGENTA "Enter your Account No : " ANSI_RESET);
+    printf(ANSI_COLOR_MAGENTA "Enter your Account Number : " ANSI_RESET);
     scanf("%s", accountNo);
 
-    printf(ANSI_COLOR_MAGENTA "Enter your Password : " ANSI_RESET);
+    printf(ANSI_COLOR_MAGENTA "Enter your Password       : " ANSI_RESET);
     scanf("%s", inputPassword);
 
     char query[500];
@@ -688,7 +692,7 @@ void loginAcc()
         }
         else
         {
-            printf("\n" ANSI_BG_RED ANSI_COLOR_BLACK "INVALID ACCOUNT NUMBER / PASSWORD ." ANSI_RESET ANSI_BLINK ANSI_BG_RED " PLEASE TRY AGAIN TO RELOGIN !!!" ANSI_RESET "\n");
+            printf("\n" ANSI_BG_RED ANSI_COLOR_BLACK "INVALID ACCOUNT NUMBER / PASSWORD ." ANSI_RESET ANSI_BLINK ANSI_BG_RED " PLEASE TRY AGAIN  TO RELOGIN !!!" ANSI_RESET "\n");
             sleep(2);
             mainMenu();
         }
@@ -769,7 +773,7 @@ void inLoginMenu(const char *inMfirstName, const char *inMlastName, const char *
     capitalizeFirstLetter(inMLastName);
 
     // Print the formatted login information
-    printf(ANSI_BG_YELLOW ANSI_BLINK " ! WELCOME TO DEVELLOPMENT BANK SYSTERM ! " ANSI_RESET "\n");
+    printf(ANSI_BG_YELLOW ANSI_BLINK "   ! WELCOME TO DEVELLOPMENT BANK SYSTERM !   " ANSI_RESET "\n");
     printf("\n" ANSI_COLOR_CYAN "HELLO, %s %s " ANSI_RESET "\n\n", inMFirstName, inMLastName);
 
     // Rest of your code...
@@ -863,7 +867,7 @@ void inMwithdraw(const char *WFirstName, const char *WLastName, const char *WNic
         }
         else
         {
-            printf("\n" ANSI_BG_RED ANSI_COLOR_BLACK "THIS [ ACCOUNT HOLDER ] NIC IS INCORRECT ." ANSI_RESET ANSI_BLINK ANSI_BG_RED " PLEASE TRY AGAIN !!!" ANSI_RESET "\n");
+            printf("\n" ANSI_BG_RED ANSI_COLOR_BLACK "THIS [ ACCOUNT HOLDER ] NIC IS INCORRECT  ." ANSI_RESET ANSI_BLINK ANSI_BG_RED " PLEASE TRY AGAIN !!!" ANSI_RESET "\n");
             attempt++;
             printf("\n................................................................................\n");
             sleep(2);
@@ -938,7 +942,7 @@ void afterOutMWithdraw(const int aOutAccNo)
     int myOption;
 
     printf(ANSI_COLOR_BLACK ANSI_BG_YELLOW " * Minimum Amount Is [ Rs.100.00 ] & Maximum Amount Is [ Rs.5000.00 ]" ANSI_RESET "\n");
-    printf(ANSI_COLOR_BLACK ANSI_BG_YELLOW " * Enter Your Amount In Multiples Of [ 100 ] " ANSI_RESET "\n\n");
+    printf(ANSI_COLOR_BLACK ANSI_BG_YELLOW " * Enter Your Amount In Multiples Of [ 100 ]                         " ANSI_RESET "\n\n");
     for (int attempts = 0; attempts < maxAttempts; ++attempts)
     {
 
@@ -1010,7 +1014,7 @@ void afterOutMWithdraw(const int aOutAccNo)
 
             if (attempts < maxAttempts - 1)
             {
-                printf(ANSI_BG_RED ANSI_COLOR_BLACK "YOU HAVE" ANSI_RESET ANSI_BLINK ANSI_BG_RED " %d " ANSI_RESET ANSI_BG_RED ANSI_COLOR_BLACK "ATTEMPTS REMAINING !!! " ANSI_RESET "\n\n", maxAttempts - attempts - 1);
+                printf(ANSI_BG_RED ANSI_COLOR_BLACK "YOU HAVE" ANSI_RESET ANSI_BLINK ANSI_BG_RED " %d " ANSI_RESET ANSI_BG_RED ANSI_COLOR_BLACK "ATTEMPTS REMAINING      !!! " ANSI_RESET "\n\n", maxAttempts - attempts - 1);
                 printf(".................................................................................\n\n");
             }
             else
@@ -1121,7 +1125,7 @@ int getAccountNumber(const char *DNicNo)
     }
     else
     {
-        printf("No Account Found For NIC %s\n", DNicNo);
+        printf("\n\n" ANSI_COLOR_RED "ACCOUNT NOT CREATED THIS NIC NUMBER " ANSI_RESET ANSI_BLINK " [ %s ] " ANSI_RESET "\n\n", DNicNo);
         return -1; // Return -1 for no account found
     }
 }
@@ -1165,7 +1169,7 @@ void inMdeposit(const char *DFirstName, const char *DLastName, const char *DNicN
     {
         printf("\n.................................................................................\n\n");
         printf(ANSI_COLOR_BLACK ANSI_BG_YELLOW " * Minimum Amount Is [ Rs.100.00 ] & Maximum Amount Is [ Rs.5000.00 ]" ANSI_RESET "\n");
-        printf(ANSI_COLOR_BLACK ANSI_BG_YELLOW " * Enter Your Amount In Multiples Of [ 100 ] " ANSI_RESET "\n\n");
+        printf(ANSI_COLOR_BLACK ANSI_BG_YELLOW " * Enter Your Amount In Multiples Of [ 100 ]                         " ANSI_RESET "\n\n");
         printf(ANSI_COLOR_MAGENTA "\nEnter Your [DEPOSIT] Amount : " ANSI_RESET);
         scanf("%d", &inMdAmount);
 
@@ -1198,7 +1202,7 @@ void processDepositOptions(const char *DFirstName, const char *DLastName, const 
         printf("\n" ANSI_COLOR_MAGENTA "Press (1) : " ANSI_RESET "Deposit Additional Money\n");
         printf(ANSI_COLOR_MAGENTA "Press (2) : " ANSI_RESET "Check Balance\n");
         printf(ANSI_COLOR_MAGENTA "Press (3) : " ANSI_RESET "[ MAIN MENU ]\n");
-        printf(ANSI_COLOR_MAGENTA "Press (4) : " ANSI_RESET "[ Exit ]\n\n");
+        printf(ANSI_COLOR_MAGENTA "Press (4) : " ANSI_RESET "[ Exit      ]\n\n");
         printf(ANSI_COLOR_BLUE "Enter Your Choice : " ANSI_RESET);
 
         scanf("%d", &inMdSwitch);
@@ -1265,9 +1269,9 @@ void inMtransfer(const char *TFirstName, const char *TLastName, const char *TNic
         else
         {
             printf("\n.................................................................................\n\n");
-            printf(ANSI_COLOR_MAGENTA "Press (1) : " ANSI_RESET "[ TRY AGAIN ]\n");
-            printf(ANSI_COLOR_MAGENTA "Press (2) : " ANSI_RESET "[ MAIN MENU ]\n");
-            printf(ANSI_COLOR_MAGENTA "Press (3) : " ANSI_RESET "[ EXIT ]\n");
+            printf(ANSI_COLOR_MAGENTA "Press (1) : " ANSI_RESET "[ TRY AGAIN  ]\n");
+            printf(ANSI_COLOR_MAGENTA "Press (2) : " ANSI_RESET "[ MAIN MENU  ]\n");
+            printf(ANSI_COLOR_MAGENTA "Press (3) : " ANSI_RESET "[ EXIT       ]\n");
             printf("\n" ANSI_COLOR_BLUE "Enter Your Choice : " ANSI_RESET);
             scanf("%d", &inMtaccNo);
             printf("\n.................................................................................\n\n");
@@ -1303,7 +1307,7 @@ void tAfterGetNic(const char *tgetNic, const char *myNicNo)
     printf("\n%s\n", tAFullName);
     free(tAFullName);
 
-    printf(ANSI_COLOR_MAGENTA "Press (1) : " ANSI_RESET "Tansfer Account Number & Account Holder Name [ CORRECT ] \n");
+    printf(ANSI_COLOR_MAGENTA "Press (1) : " ANSI_RESET "Tansfer Account Number & Account Holder Name [ CORRECT   ] \n");
     printf(ANSI_COLOR_MAGENTA "Press (2) : " ANSI_RESET "Tansfer Account Number & Account Holder Name [ INCORRECT ] \n");
     printf(ANSI_COLOR_MAGENTA "Press (3) : " ANSI_RESET "[ EXIT ]\n\n");
 
@@ -1365,9 +1369,9 @@ void transfer(const char *holderNic, const char *mytNic)
 
                 printf("\n.................................................................................\n\n");
                 printf(ANSI_COLOR_MAGENTA "Press (1) : " ANSI_RESET "[ MAIN MENU ]\n");
-                printf(ANSI_COLOR_MAGENTA "Press (2) : " ANSI_RESET "[ EXIT ]\n\n");
+                printf(ANSI_COLOR_MAGENTA "Press (2) : " ANSI_RESET "[ EXIT      ]\n\n");
 
-                printf(ANSI_COLOR_MAGENTA "Enter Your Choise [ 1 / 2 ] : " ANSI_RESET);
+                printf(ANSI_COLOR_MAGENTA "Enter Your Choise  [ 1 / 2 ] : " ANSI_RESET);
                 scanf("%d", &xChoise);
 
                 switch (xChoise)
@@ -1392,7 +1396,7 @@ void transfer(const char *holderNic, const char *mytNic)
                 printf(ANSI_COLOR_MAGENTA "[1] : " ANSI_RESET "[ TRY AGAIN ]\n");
                 printf(ANSI_COLOR_MAGENTA "[2] : " ANSI_RESET "[ MAIN MENU ]\n");
                 printf(ANSI_COLOR_MAGENTA "[3] : " ANSI_RESET "[ EXIT ]\n\n");
-                printf(ANSI_COLOR_MAGENTA "Enter Your Choise [ 1 / 2 / 3 ] : " ANSI_RESET);
+                printf(ANSI_COLOR_MAGENTA "Enter Your Choise  [ 1 / 2 / 3 ] : " ANSI_RESET);
                 scanf("%d", &inmyval);
 
                 switch (inmyval)
@@ -1416,9 +1420,9 @@ void transfer(const char *holderNic, const char *mytNic)
 void inMloan(const char *LFirstName, const char *LLastName, const char *LNicNo)
 {
     printf("\n.................................................................................\n\n");
-    printf(ANSI_BG_YELLOW ANSI_BLINK " ! WELCOME TO DEVELLOPMENT BANK SYSTERM ! " ANSI_RESET "\n\n");
-    printf(ANSI_COLOR_CYAN "DEVELOPER NAME : [ Dhanuja Dissanayke ]" ANSI_RESET "\n");
-    printf(ANSI_COLOR_CYAN "CONTACT NUMBER : [ 0725563410 ]" ANSI_RESET "\n");
+    printf(ANSI_BG_YELLOW ANSI_BLINK "   ! WELCOME TO DEVELLOPMENT BANK SYSTERM !   " ANSI_RESET "\n\n");
+    printf(ANSI_COLOR_CYAN "DEVELOPER NAME      : [  Dhanuja Dissanayke  ]" ANSI_RESET "\n");
+    printf(ANSI_COLOR_CYAN "CONTACT NUMBER      : [      0725563410      ]" ANSI_RESET "\n");
 
     sleep(3);   // Pause for 3 seconds
     mainMenu(); // Return to the main menu
@@ -1429,11 +1433,11 @@ void inMwithDepHistory(const char *histNic)
 {
     int historyChoise;
     printf("\n.................................................................................\n\n");
-    printf(ANSI_BG_YELLOW ANSI_BLINK " ! WELCOME TO DEVELLOPMENT BANK SYSTERM ! " ANSI_RESET "\n");
-    printf("\n" ANSI_COLOR_MAGENTA "Press (1) : " ANSI_RESET "[ WITHDRAWAL HISTORY ]\n");
-    printf(ANSI_COLOR_MAGENTA "Press (2) : " ANSI_RESET "[ DEPOSIT HISTORY ]\n");
+    printf(ANSI_BG_YELLOW ANSI_BLINK "   ! WELCOME TO DEVELLOPMENT BANK SYSTERM !   " ANSI_RESET "\n");
+    printf("\n" ANSI_COLOR_MAGENTA "Press (1) : " ANSI_RESET "[ WITHDRAWAL HISTORY  ]\n");
+    printf(ANSI_COLOR_MAGENTA "Press (2) : " ANSI_RESET "[ DEPOSIT HISTORY     ]\n");
     printf(ANSI_COLOR_MAGENTA "Press (3) : " ANSI_RESET "[ TRANSACTION HISTORY ]\n");
-    printf(ANSI_COLOR_MAGENTA "Press (4) : " ANSI_RESET "[ MAIN MENU ]\n\n");
+    printf(ANSI_COLOR_MAGENTA "Press (4) : " ANSI_RESET "[ MAIN MENU           ]\n\n");
 
     printf(ANSI_COLOR_BLUE "Enter Your Choice : " ANSI_RESET);
     scanf("%d", &historyChoise);
@@ -1668,9 +1672,315 @@ void hisTransHis(const char *nitNic)
 // Function to forget in account user name and password etc.
 void forgetAcc()
 {
+    int Choise;
+
+    printf("\n...............................................................................\n\n");
+    printf(ANSI_COLOR_MAGENTA "Press (1) : " ANSI_RESET "Forget Password \n");
+    printf(ANSI_COLOR_MAGENTA "Press (2) : " ANSI_RESET "Update Details \n");
+    printf(ANSI_COLOR_MAGENTA "Press (3) : " ANSI_RESET "Delete Account \n");
+    printf(ANSI_COLOR_MAGENTA "Press (4) : " ANSI_RESET "[ MAINMENU ] \n");
+    printf(ANSI_COLOR_MAGENTA "Press (5) : " ANSI_RESET "[   EXIT   ] \n");
+
+    printf("\n" ANSI_COLOR_BLUE "Enter Your Choice : " ANSI_COLOR_RESET);
+    scanf("%d", &Choise);
+    printf("\n...............................................................................\n\n");
+
+    switch (Choise)
+    {
+    case 1:
+        forgetMyAcc();
+        break;
+    case 2:
+        changeDetails();
+        break;
+    case 3:
+        deleteAcc();
+        break;
+    case 4:
+        mainMenu();
+        break;
+    case 5:
+        printf("\n\n" ANSI_COLOR_BLACK ANSI_BG_GREEN "THANK YOU FOR USING DEVELOPMENT BANK SYSTEM ." ANSI_RESET ANSI_BLINK ANSI_BG_GREEN " GOODBYE !!! " ANSI_RESET "\n\n");
+        exit(EXIT_SUCCESS);
+        break;
+    default:
+        printf("\n" ANSI_BG_RED ANSI_COLOR_BLACK "INVALID CHOISE ." ANSI_RESET ANSI_BG_RED ANSI_BLINK " SORRY !!! " ANSI_RESET "\n");
+        sleep(2);
+        mainMenu();
+        break;
+    }
 }
 
-// END LOGIN ACCOUNT..................................................
+void forgetMyAcc()
+{
+    char lastNic[15];
+    int lastAcc;
+
+    printf(ANSI_COLOR_MAGENTA "Enter Your [ ACCOUNT NUMBER ] : " ANSI_COLOR_RESET);
+    scanf("%d", &lastAcc);
+    printf(ANSI_COLOR_MAGENTA "Enter Your [    NIC NUMBER  ] : " ANSI_COLOR_RESET);
+    scanf("%s", lastNic);
+
+    int lastCAcc = getAccountNumber(lastNic);
+    int mypassword = 0; // Initialize mypassword
+
+    char query[MAX_QUERY_LENGTH];
+    snprintf(query, MAX_QUERY_LENGTH, "SELECT password FROM account WHERE nic='%s'", lastNic);
+
+    if (mysql_query(conn, query) != 0)
+    {
+        fprintf(stderr, "mysql_query failed\n");
+        mysql_close(conn);
+        exit(1);
+    }
+
+    MYSQL_RES *result = mysql_store_result(conn);
+    if (result == NULL)
+    {
+        fprintf(stderr, "mysql_store_result failed\n");
+        mysql_close(conn);
+        exit(1);
+    }
+
+    MYSQL_ROW row = mysql_fetch_row(result);
+
+    if (row != NULL)
+    {
+        mypassword = atoi(row[0]);
+    }
+
+    if (lastAcc != lastCAcc)
+    {
+        printf(ANSI_BG_RED ANSI_COLOR_BLACK " YOUR ENTERED ACCOUNT DETAILS DO NOT MATCH. " ANSI_RESET ANSI_BG_RED ANSI_BLINK " PLEASE TRY AGAIN !!! " ANSI_RESET "\n");
+        printf("\n\n...............................................................................\n\n");
+    }
+    else
+    {
+        printf("\n.................................................................................\n\n");
+        printf(ANSI_BG_GREEN ANSI_COLOR_BLACK "Your Account Password     : " ANSI_RESET ANSI_BG_GREEN ANSI_BLINK "%d" ANSI_RESET "\n", mypassword);
+        // code...............
+        // switch changeDetails press1
+        // mainMenu() press2
+    }
+    forgetAcc();
+}
+
+void changeDetails()
+{
+    int endAcc;
+    int endPswd;
+    int choice;
+    int oldpassword;
+    int resul;
+
+    printf(ANSI_COLOR_MAGENTA "Enter Your [ ACCOUNT NUMBER ] : " ANSI_RESET);
+    scanf("%d", &endAcc);
+    printf(ANSI_COLOR_MAGENTA "Enter Your [    PASSWORD    ] : " ANSI_RESET);
+    scanf("%d", &endPswd);
+
+    char myNicNom[15];
+
+    // Retrieve NIC number from 'account' table
+    char queryNic[MAX_QUERY_LENGTH];
+    snprintf(queryNic, MAX_QUERY_LENGTH, "SELECT nic FROM account WHERE account_no=%d", endAcc);
+
+    MYSQL_RES *resultNic = executeQuery(queryNic);
+    MYSQL_ROW rowNic = mysql_fetch_row(resultNic);
+
+    if (rowNic != NULL)
+    {
+        strncpy(myNicNom, rowNic[0], sizeof(myNicNom) - 1);
+        myNicNom[sizeof(myNicNom) - 1] = '\0';
+    }
+
+    int adaccNo = getAccountNumber(myNicNom);
+
+    if (adaccNo != endAcc)
+    {
+        printf("Account number does not match the NIC number.\n");
+        return;
+    } else {
+        printf("Change password press 1 : ");
+        printf("Change name, address, email press 2 : ");
+        
+        printf("Enter your choise : ");
+        scanf("%d", &choice);
+
+        switch (choice)
+        {
+        case 1:
+            printf("Enter your old password : ");
+            scanf("%d", &oldpassword);
+            int resul = checkOldPassword(endAcc, oldpassword);
+            if (resul == 1)
+            {
+                printf("Enter your new password : ");
+                scanf("%d", &endPswd);
+                char query[MAX_QUERY_LENGTH];
+                snprintf(query, MAX_QUERY_LENGTH, "UPDATE account SET password = %d WHERE account_no = %d", endPswd, endAcc);
+                executeQuery(query);
+                printf("Password changed successfully.\n");
+            }
+            else
+            {
+                printf("Old password does not match.\n");
+            }
+            break;
+        case 2:
+            printf("Enter your new name : ");
+            char newName[50];
+            scanf("%s", newName);
+            printf("Enter your new address : ");
+            char newAddress[100];
+            scanf("%s", newAddress);
+            printf("Enter your new email : ");
+            char newEmail[50];
+            scanf("%s", newEmail);
+            char query[MAX_QUERY_LENGTH];
+            snprintf(query, MAX_QUERY_LENGTH, "UPDATE customer SET name = '%s', address = '%s', email = '%s' WHERE nic = '%s'", newName, newAddress, newEmail, myNicNom);
+            executeQuery(query);
+            
+            printf("Details updated successfully.\n");
+
+            break;
+        default:
+            printf("Error : ");
+            mainMenu();
+            break;
+        }
+    }
+}
+int checkOldPassword(int accountNumber, const char *oldPassword) {
+    // Create the SELECT query
+    char selectQuery[MAX_QUERY_LENGTH];
+    snprintf(selectQuery, MAX_QUERY_LENGTH, "SELECT password FROM account WHERE account_number=%d", accountNumber);
+
+    // Execute the query
+    if (mysql_query(conn, selectQuery) != 0) {
+        fprintf(stderr, "mysql_query failed\n");
+        mysql_close(conn);
+        exit(1);
+    }
+
+    // Get the result set
+    MYSQL_RES *result = mysql_store_result(conn);
+
+    if (result == NULL) {
+        fprintf(stderr, "mysql_store_result failed\n");
+        mysql_close(conn);
+        exit(1);
+    }
+
+    // Fetch the row
+    MYSQL_ROW row = mysql_fetch_row(result);
+
+    // Check if the row is not NULL and the passwords match
+    if (row != NULL && strcmp(oldPassword, row[0]) == 0) {
+        // Passwords match
+        mysql_free_result(result); // Free the result set
+        return 1;
+    } else {
+        // Passwords do not match
+        mysql_free_result(result); // Free the result set
+        return 0;
+    }
+}
+
+void deleteAcc()
+{
+
+    int retryCount = 0;
+    int maxRetries = 3;
+    int enteredAccountNo;
+    int enteredPassword;
+
+    printf("Enter your account number and password to delete your account.\n");
+    scanf("%d", &enteredAccountNo);
+    printf("Enter your password: ");
+    scanf("%d", &enteredPassword);
+
+    printf("\n.................................................................................\n\n");
+
+    // .....................................................................
+    char myNicNom[15];
+
+    // Retrieve NIC number from 'account' table
+    char queryNic[MAX_QUERY_LENGTH];
+    snprintf(queryNic, MAX_QUERY_LENGTH, "SELECT nic FROM account WHERE account_no=%d", enteredAccountNo);
+
+    MYSQL_RES *resultNic = executeQuery(queryNic);
+    MYSQL_ROW rowNic = mysql_fetch_row(resultNic);
+
+    if (rowNic != NULL)
+    {
+        strncpy(myNicNom, rowNic[0], sizeof(myNicNom) - 1);
+        myNicNom[sizeof(myNicNom) - 1] = '\0';
+    }
+
+    int adaccNo = getAccountNumber(myNicNom);
+
+    if (adaccNo != enteredAccountNo)
+    {
+        printf("Account number does not match the NIC number.\n");
+        return;
+    }
+    else
+    {
+
+        // Free the result set when you are done with it
+        mysql_free_result(resultNic);
+        // ................................................................
+        // Create separate queries for different tables to be deleted
+        char deleteQuery[MAX_QUERY_LENGTH];
+
+        // Delete from 'account' table
+        snprintf(deleteQuery, MAX_QUERY_LENGTH, "DELETE FROM account WHERE account_no=%d", enteredAccountNo);
+        if (mysql_query(conn, deleteQuery) != 0)
+        {
+            fprintf(stderr, "mysql_query failed\n");
+            mysql_close(conn);
+            exit(1);
+        }
+
+        // Delete from 'money' table
+        snprintf(deleteQuery, MAX_QUERY_LENGTH, "DELETE FROM money WHERE account_no=%d", enteredAccountNo);
+        if (mysql_query(conn, deleteQuery) != 0)
+        {
+            fprintf(stderr, "mysql_query failed\n");
+            mysql_close(conn);
+            exit(1);
+        }
+
+        // Delete from 'withdraw' table
+        snprintf(deleteQuery, MAX_QUERY_LENGTH, "DELETE FROM withdraw WHERE account_no=%d", enteredAccountNo);
+        if (mysql_query(conn, deleteQuery) != 0)
+        {
+            fprintf(stderr, "mysql_query failed\n");
+            mysql_close(conn);
+            exit(1);
+        }
+
+        // Delete from 'deposits' table
+        snprintf(deleteQuery, MAX_QUERY_LENGTH, "DELETE FROM deposits WHERE account_no=%d", enteredAccountNo);
+        if (mysql_query(conn, deleteQuery) != 0)
+        {
+            fprintf(stderr, "mysql_query failed\n");
+            mysql_close(conn);
+            exit(1);
+        }
+
+        snprintf(deleteQuery, MAX_QUERY_LENGTH, "DELETE FROM customer WHERE nic=%s", myNicNom);
+        if (mysql_query(conn, deleteQuery) != 0)
+        {
+            fprintf(stderr, "mysql_query failed\n");
+            mysql_close(conn);
+            exit(1);
+        }
+
+        printf("Account with account number %d has been deleted.\n", enteredAccountNo);
+    }
+}
+
 // Function to clear the terminal
 void clearScreen()
 {
@@ -1694,7 +2004,8 @@ void clearBuffer()
 // Exit
 void exitProgram(const char *DFirstName, const char *DLastName)
 {
-    printf("\n\n" ANSI_COLOR_BLACK ANSI_BG_GREEN "THANK YOU FOR USING DEVELOPMENT BANK SYSTEM ." ANSI_RESET ANSI_BLINK ANSI_BG_GREEN " GOODBYE !!! " ANSI_RESET "\n\n");
+    printf("\n" ANSI_COLOR_BLACK ANSI_BG_GREEN "THANK YOU FOR USING DEVELOPMENT BANK SYSTEM ." ANSI_RESET ANSI_BLINK ANSI_BG_GREEN " GOODBYE !!! " ANSI_RESET "\n");
+    printf("\n.................................................................................\n\n");
     sleep(2);
     mysql_close(conn);
     exit(EXIT_SUCCESS);
